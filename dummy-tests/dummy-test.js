@@ -29,3 +29,11 @@ describe('A second sample test suite', function(){
     assert.equal(1, 1);
   });
 });
+
+describe('An async testsuite', function(){
+  it('should fail after 100ms', function(){
+    setTimeout(function(){
+      assert.equal(true, false);
+    }, 1000);
+  });
+});
