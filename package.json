@@ -2,9 +2,10 @@
   "name": "tiny-test-runner",
   "version": "0.1.0",
   "description": "a tiny test runner",
-  "main": "dist/index.js",
+  "main": "dist/runTests.js",
   "scripts": {
     "build": "babel src -d dist",
+    "prepublish": "npm run build",
     "test": "node test",
     "watch": "babel src -d dist --watch"
   },
