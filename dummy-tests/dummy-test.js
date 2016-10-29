@@ -31,9 +31,14 @@ describe('A second sample test suite', function(){
 });
 
 describe('An async testsuite', function(){
-  it('should fail after 100ms', function(){
+  it('should fail after 100ms', function(done){
     setTimeout(function(){
-      assert.equal(true, false);
-    }, 1000);
+      try {
+        assert.equal(true, false);
+        done();
+      } catch (e) {
+        done(e);
+      }
+    }, 3000);
   });
 });
