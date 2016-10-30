@@ -21,31 +21,31 @@ module.exports = function runTests(optsForFindTests = {}) {
     });
   };
 
-  // Load test files, populating suites
+  // Load test files and populate suites array.
   const testFilePaths = findTests(optsForFindTests);
   testFilePaths.forEach(filePath => require(filePath));
 
-  // Go through and turn each test into a promise
-  // When an individual promise resolves
-  // It add infomration to its entry in suites
+  // Go through and turn each test into a promise.
+  // When an individual promise resolves,
+  // it adds infomration to its entry in suites.
   const testPromises = [];
   suites.forEach((suite, i) => {
     suite.tests.forEach((test, j) => {
       const { testCb } = test;
 
-      // Does it() have a done callback?
+      // Does the it() callback list a done parameter?
       // We'll use the follow regex to figure this out.
-      // If it does have a done cb, then we'll let the it() function
-      // fulfill the promise itself. If it doesn't, well do it.
+      // If there is a done cb, then we'll let the it() callback
+      // fulfill the promise itself by calling done. Otherwise, we'll do it.
       const cbHasParam = testCb.toString().match(/^[^(]*\([^)\s]+/);
 
-      // These test promises are only ever fulfilled, none are rejected
+      // These test promises are only ever fulfilled, none are rejected.
       // The difference between a passed and failing test
       // is not whether the associated promise is fulfilled or rejected,
-      // but rather whether the promise is fulfilled with a value or not
-      // If a promise is fulfilled, but not with a value, then the test passed
-      // If a promise is fulfilled with a value, then the test failed
-      // And the value is the relevant AssertionError object
+      // but rather whether the promise is fulfilled with a value or not.
+      // If a promise is fulfilled, but not with a value, then the test passed.
+      // If a promise is fulfilled with a value, then the test failed.
+      // The value is the relevant AssertionError object.
       const testPromise = new Promise((done) => {
         try {
           testCb(done);
@@ -68,8 +68,8 @@ module.exports = function runTests(optsForFindTests = {}) {
     });
   });
 
-  // When all the promises have resolved
-  // The fully updated suites is passed to the reporter
+  // When all the promises have resolved,
+  // the fully updated suites array is passed to the reporter.
   Promise.all(testPromises)
     .then(() => report(suites))
     .catch((err) => { throw err; });
