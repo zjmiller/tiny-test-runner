@@ -1,23 +1,25 @@
+/* eslint-disable global-require, import/no-dynamic-require */
+
 import findTests from 'tiny-test-finder';
 import report from './report';
 
-module.exports = function runTests(optsForFindTests = {}){
-  let suites = [];
+module.exports = function runTests(optsForFindTests = {}) {
+  const suites = [];
 
-  global.describe = function(suiteDescription, suiteCb) {
+  global.describe = function describe(suiteDescription, suiteCb) {
     suites.push({
       suiteDescription,
       tests: [],
     });
     suiteCb();
-  }
+  };
 
-  global.it = function(testDescription, testCb) {
+  global.it = function it(testDescription, testCb) {
     suites[suites.length - 1].tests.push({
       testDescription,
       testCb,
     });
-  }
+  };
 
   // Load test files, populating suites
   const testFilePaths = findTests(optsForFindTests);
@@ -26,10 +28,8 @@ module.exports = function runTests(optsForFindTests = {}){
   // Go through and turn each test into a promise
   // When an individual promise resolves
   // It add infomration to its entry in suites
-  let testPromises = [];
+  const testPromises = [];
   suites.forEach((suite, i) => {
-    const { tests } = suite;
-
     suite.tests.forEach((test, j) => {
       const { testCb } = test;
 
@@ -46,7 +46,7 @@ module.exports = function runTests(optsForFindTests = {}){
       // If a promise is fulfilled, but not with a value, then the test passed
       // If a promise is fulfilled with a value, then the test failed
       // And the value is the relevant AssertionError object
-      const testPromise = new Promise(function(done){
+      const testPromise = new Promise((done) => {
         try {
           testCb(done);
           if (!cbHasParam) done();
@@ -55,14 +55,14 @@ module.exports = function runTests(optsForFindTests = {}){
         }
       });
 
-      testPromise.then(assertionErrorAsValue => {
+      testPromise.then((assertionErrorAsValue) => {
         if (!assertionErrorAsValue) {
           suites[i].tests[j].success = true;
         } else {
           suites[i].tests[j].success = false;
           suites[i].tests[j].err = assertionErrorAsValue;
         }
-      }).catch(err => console.log(err));
+      }).catch((err) => { throw err; });
 
       testPromises.push(testPromise);
     });
@@ -72,5 +72,5 @@ module.exports = function runTests(optsForFindTests = {}){
   // The fully updated suites is passed to the reporter
   Promise.all(testPromises)
     .then(() => report(suites))
-    .catch(err => console.log(err));
-}
+    .catch((err) => { throw err; });
+};

@@ -5,6 +5,7 @@
   "main": "dist/runTests.js",
   "scripts": {
     "build": "babel src -d dist",
+    "lint": "eslint src; exit 0",
     "prepublish": "npm run build",
     "test": "node test",
     "watch": "babel src -d dist --watch"
@@ -16,7 +17,10 @@
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.18.0",
-    "babel-preset-es2015": "^6.18.0"
+    "babel-preset-es2015": "^6.18.0",
+    "eslint": "^3.9.0",
+    "eslint-config-airbnb-base": "^9.0.0",
+    "eslint-plugin-import": "^2.0.1"
   },
   "dependencies": {
     "chalk": "^1.1.3",
