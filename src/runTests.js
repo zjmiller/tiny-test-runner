@@ -74,8 +74,3 @@ module.exports = function runTests(optsForFindTests = {}){
     .then(() => report(suites))
     .catch(err => console.log(err));
 }
-
-// async moves out of call stack, errors don't pass up
-// need to catch errors and use a promise's reject method
-// Promise.all fails fast
-// throw is statement
