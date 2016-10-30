@@ -71,6 +71,6 @@ module.exports = function runTests(optsForFindTests = {}) {
   // When all the promises have resolved,
   // the fully updated suites array is passed to the reporter.
   Promise.all(testPromises)
-    .then(() => reportOnTests(suites))
+    .then(() => reportOnTestResults(suites))
     .catch((err) => { throw err; });
 };
