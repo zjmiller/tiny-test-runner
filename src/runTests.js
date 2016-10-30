@@ -1,6 +1,4 @@
-import chalk from 'chalk';
 import findTests from 'tiny-test-finder';
-import fs from 'fs';
 import report from './report';
 
 module.exports = function runTests(optsForFindTests = {}){
