@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 
-export default function report(results) {
+export default function reportOnTestResults(results) {
   results.forEach((suite) => {
     console.log('  ' + chalk.gray.bold(suite.suiteDescription));
     suite.tests.forEach((test) => {
@@ -16,20 +16,37 @@ export default function report(results) {
       if (!test.success) {
         console.log();
 
+        const relPathOfErrorPlusLineColumn =
+          test.err.stack.split('\n')[1].slice(8 + process.cwd().length);
+
         console.log(chalk.gray(
           '      '
           + 'failure @  '
-          + test.err.stack.split('\n')[1].slice(8 + process.cwd().length)
+          + relPathOfErrorPlusLineColumn
         ));
+
+        const expectedOutputMaybeStringified =
+          typeof test.err.expected === 'object'
+          ?
+          JSON.stringify(test.err.expected)
+          :
+          test.err.expected;
 
         console.log(chalk.green(
           '       '
-          + `expected  ${typeof test.err.expected === 'object' ? JSON.stringify(test.err.expected) : test.err.expected}`
+          + `expected  ${expectedOutputMaybeStringified}`
         ));
+
+        const actualOutputMaybeStringified =
+          typeof test.err.actual === 'object'
+          ?
+          JSON.stringify(test.err.expected)
+          :
+          test.err.actual;
 
         console.log(chalk.red(
           '         '
-          + `actual  ${typeof test.err.expected === 'object' ? JSON.stringify(test.err.actual) : test.err.actual}`
+          + `actual  ${actualOutputMaybeStringified}`
         ));
 
         console.log();

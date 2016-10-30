@@ -1,7 +1,7 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 
 import findTests from 'tiny-test-finder';
-import report from './report';
+import reportOnTestResults from './reportOnTestResults';
 
 module.exports = function runTests(optsForFindTests = {}) {
   const suites = [];
@@ -71,6 +71,6 @@ module.exports = function runTests(optsForFindTests = {}) {
   // When all the promises have resolved,
   // the fully updated suites array is passed to the reporter.
   Promise.all(testPromises)
-    .then(() => report(suites))
+    .then(() => reportOnTests(suites))
     .catch((err) => { throw err; });
 };
