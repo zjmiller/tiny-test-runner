@@ -1,2 +1,2 @@
 var runTests = require('./dist/runTests');
-runTests({ posTestDirNames: ['dummy-tests'] });
+runTests({ optsForFindTests: { posTestDirNames: ['dummy-tests'] } });
