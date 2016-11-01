@@ -2,20 +2,7 @@
 /* eslint-disable no-console, prefer-template */
 
 import chalk from 'chalk';
-
-type Test = {|
-  testDescription: string,
-  testCb: Function,
-  success?: boolean,
-  err?: Object
-|}
-
-type Suite = {
-  suiteDescription: string,
-  tests: Array<Test>
-}
-
-type TestResults = Array<Suite>;
+import type { TestResults, Suite, Test } from '../flow-types/types';
 
 export default function reportOnTestResults(results: TestResults): void {
   results.forEach((suite: Suite) => {

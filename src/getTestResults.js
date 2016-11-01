@@ -2,20 +2,7 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 
 import findTests from 'tiny-test-finder';
-
-type Test = {|
-  testDescription: string,
-  testCb: Function,
-  success?: boolean,
-  err?: Object
-|}
-
-type Suite = {
-  suiteDescription: string,
-  tests: Array<Test>
-}
-
-type TestResults = Array<Suite>;
+import type { TestResults } from '../flow-types/types';
 
 export default function getTestResults(opts: Object): Promise<TestResults> {
   const suites: TestResults = [];

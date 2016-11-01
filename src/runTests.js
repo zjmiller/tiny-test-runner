@@ -2,20 +2,7 @@
 
 import getTestResults from './getTestResults';
 import reportOnTestResults from './reportOnTestResults';
-
-type Test = {|
-  testDescription: string,
-  testCb: Function,
-  success?: boolean,
-  err?: Object
-|}
-
-type Suite = {
-  suiteDescription: string,
-  tests: Array<Test>
-}
-
-type TestResults = Array<Suite>;
+import type { TestResults } from '../flow-types/types';
 
 module.exports = function runTests(opts: Object) {
   getTestResults(opts)
