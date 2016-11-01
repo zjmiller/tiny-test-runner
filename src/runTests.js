@@ -1,8 +1,24 @@
+/* @flow */
+
 import getTestResults from './getTestResults';
 import reportOnTestResults from './reportOnTestResults';
 
-module.exports = function runTests(opts) {
+type Test = {|
+  testDescription: string,
+  testCb: Function,
+  success?: boolean,
+  err?: Object
+|}
+
+type Suite = {
+  suiteDescription: string,
+  tests: Array<Test>
+}
+
+type TestResults = Array<Suite>;
+
+module.exports = function runTests(opts: Object) {
   getTestResults(opts)
-    .then(results => reportOnTestResults(results))
-    .catch((err) => { throw err; });
+    .then((results: TestResults) => { reportOnTestResults(results); })
+    .catch((err: Object) => { throw err; });
 };

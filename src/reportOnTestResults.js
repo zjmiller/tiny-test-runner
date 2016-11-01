@@ -1,23 +1,40 @@
+/* @flow */
 /* eslint-disable no-console, prefer-template */
 
 import chalk from 'chalk';
 
-export default function reportOnTestResults(results) {
-  results.forEach((suite) => {
+type Test = {|
+  testDescription: string,
+  testCb: Function,
+  success?: boolean,
+  err?: Object
+|}
+
+type Suite = {
+  suiteDescription: string,
+  tests: Array<Test>
+}
+
+type TestResults = Array<Suite>;
+
+export default function reportOnTestResults(results: TestResults): void {
+  results.forEach((suite: Suite) => {
     console.log('  ' + chalk.gray.bold(suite.suiteDescription));
-    suite.tests.forEach((test) => {
+    suite.tests.forEach((test: Test) => {
+      const { testDescription, success, err } = test;
+
       console.log(
         '    '
-        + (test.success ? chalk.green('✓') : chalk.red('✗'))
+        + (success ? chalk.green('✓') : chalk.red('✗'))
         + ' '
-        + test.testDescription
+        + testDescription
       );
 
-      if (!test.success) {
+      if (err !== undefined) {
         console.log();
 
-        const relPathOfErrorPlusLineColumn =
-          test.err.stack.split('\n')[1].slice(8 + process.cwd().length);
+        const relPathOfErrorPlusLineColumn: string =
+          err.stack.split('\n')[1].slice(8 + process.cwd().length);
 
         console.log(chalk.gray(
           '      '
@@ -26,11 +43,11 @@ export default function reportOnTestResults(results) {
         ));
 
         const expectedOutputMaybeStringified =
-          typeof test.err.expected === 'object'
+          typeof err.expected === 'object'
           ?
-          JSON.stringify(test.err.expected)
+          JSON.stringify(err.expected)
           :
-          test.err.expected;
+          err.expected;
 
         console.log(chalk.green(
           '       '
@@ -38,11 +55,11 @@ export default function reportOnTestResults(results) {
         ));
 
         const actualOutputMaybeStringified =
-          typeof test.err.actual === 'object'
+          typeof err.actual === 'object'
           ?
-          JSON.stringify(test.err.expected)
+          JSON.stringify(err.expected)
           :
-          test.err.actual;
+          err.actual;
 
         console.log(chalk.red(
           '         '
@@ -55,12 +72,12 @@ export default function reportOnTestResults(results) {
     console.log();
   });
 
-  const numPassed = results.reduce(
+  const numPassed: number = results.reduce(
     (prev, cur) => prev + cur.tests.filter(test => test.success).length,
     0
   );
 
-  const numFailed = results.reduce(
+  const numFailed: number = results.reduce(
     (prev, cur) => prev + cur.tests.filter(test => !test.success).length,
     0
   );

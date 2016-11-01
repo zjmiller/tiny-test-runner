@@ -1,11 +1,26 @@
+/* @flow */
 /* eslint-disable global-require, import/no-dynamic-require */
 
 import findTests from 'tiny-test-finder';
 
-export default function getTestResults(opts) {
-  const suites = [];
+type Test = {|
+  testDescription: string,
+  testCb: Function,
+  success?: boolean,
+  err?: Object
+|}
 
-  global.describe = function describe(suiteDescription, suiteCb) {
+type Suite = {
+  suiteDescription: string,
+  tests: Array<Test>
+}
+
+type TestResults = Array<Suite>;
+
+export default function getTestResults(opts: Object): Promise<TestResults> {
+  const suites: TestResults = [];
+
+  global.describe = function describe(suiteDescription: string, suiteCb: Function) {
     suites.push({
       suiteDescription,
       tests: [],
@@ -13,7 +28,7 @@ export default function getTestResults(opts) {
     suiteCb();
   };
 
-  global.it = function it(testDescription, testCb) {
+  global.it = function it(testDescription: string, testCb: Function) {
     suites[suites.length - 1].tests.push({
       testDescription,
       testCb,
@@ -21,22 +36,22 @@ export default function getTestResults(opts) {
   };
 
   // Load test files and populate suites array.
-  const testFilePaths = findTests(opts.optsForFindTests);
-  testFilePaths.forEach(filePath => require(filePath));
+  const testFilePaths : string[] = findTests(opts.optsForFindTests);
+  testFilePaths.forEach((filePath: string) => { require(filePath); });
 
   // Go through and turn each test into a promise.
   // When an individual promise resolves,
   // it adds infomration to its entry in suites.
-  const testPromises = [];
+  const testPromises: Promise<any>[] = [];
   suites.forEach((suite, i) => {
     suite.tests.forEach((test, j) => {
-      const { testCb } = test;
+      const testCb: Function = test.testCb;
 
       // Does the it() callback list a done parameter?
       // We'll use the follow regex to figure this out.
       // If there is a done cb, then we'll let the it() callback
       // fulfill the promise itself by calling done. Otherwise, we'll do it.
-      const cbHasParam = testCb.toString().match(/^[^(]*\([^)\s]+/);
+      const cbHasParam: boolean = Boolean(testCb.toString().match(/^[^(]*\([^)\s]+/));
 
       // These test promises are only ever fulfilled, none are rejected.
       // The difference between a passed and failing test
@@ -45,7 +60,7 @@ export default function getTestResults(opts) {
       // If a promise is fulfilled, but not with a value, then the test passed.
       // If a promise is fulfilled with a value, then the test failed.
       // The value is the relevant AssertionError object.
-      const testPromise = new Promise((done) => {
+      const testPromise: Promise<any> = new Promise((done) => {
         try {
           testCb(done);
           if (!cbHasParam) done();
@@ -54,8 +69,8 @@ export default function getTestResults(opts) {
         }
       });
 
-      testPromise.then((assertionErrorAsValue) => {
-        if (!assertionErrorAsValue) {
+      testPromise.then((assertionErrorAsValue: Object | void) => {
+        if (assertionErrorAsValue === undefined) {
           suites[i].tests[j].success = true;
         } else {
           suites[i].tests[j].success = false;
@@ -67,8 +82,6 @@ export default function getTestResults(opts) {
     });
   });
 
-  // When all the promises have resolved,
-  // the fully updated suites array is passed to the reporter.
   return Promise.all(testPromises)
     .then(() => suites)
     .catch((err) => { throw err; });
