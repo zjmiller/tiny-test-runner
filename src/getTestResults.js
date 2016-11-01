@@ -23,7 +23,7 @@ export default function getTestResults(opts: Object): Promise<TestResults> {
   };
 
   // Load test files and populate suites array.
-  const testFilePaths : string[] = findTests(opts.optsForFindTests);
+  const testFilePaths: string[] = findTests(opts.optsForFindTests);
   testFilePaths.forEach((filePath: string) => { require(filePath); });
 
   // Go through and turn each test into a promise.
