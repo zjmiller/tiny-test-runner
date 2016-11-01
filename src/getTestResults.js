@@ -56,7 +56,7 @@ export default function getTestResults(opts: Object): Promise<TestResults> {
         }
       });
 
-      testPromise.then((assertionErrorAsValue: Object | void) => {
+      testPromise.then((assertionErrorAsValue?: Object) => {
         if (assertionErrorAsValue === undefined) {
           suites[i].tests[j].success = true;
         } else {
