@@ -7,7 +7,7 @@ import type { TestResults } from '../flow-types/types';
 export default function getTestResults(opts: Object): Promise<TestResults> {
   const suites: TestResults = [];
 
-  global.describe = function describe(suiteDescription: string, suiteCb: Function) {
+  global.describe = function describe(suiteDescription: string, suiteCb: Function): void {
     suites.push({
       suiteDescription,
       tests: [],
@@ -15,7 +15,7 @@ export default function getTestResults(opts: Object): Promise<TestResults> {
     suiteCb();
   };
 
-  global.it = function it(testDescription: string, testCb: Function) {
+  global.it = function it(testDescription: string, testCb: Function): void {
     suites[suites.length - 1].tests.push({
       testDescription,
       testCb,
