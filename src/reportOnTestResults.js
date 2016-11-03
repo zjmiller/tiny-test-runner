@@ -2,13 +2,21 @@
 /* eslint-disable no-console, prefer-template */
 
 import chalk from 'chalk';
-import type { TestResults, Suite, Test } from '../flow-types/types';
+import type { TestResults, Suite, Test } from '../flow-type-aliases/types';
 
 export default function reportOnTestResults(results: TestResults): void {
   results.forEach((suite: Suite) => {
     console.log('  ' + chalk.gray.bold(suite.suiteDescription));
     suite.tests.forEach((test: Test) => {
-      const { testDescription, success, err } = test;
+      const {
+        testDescription,
+        success,
+        err,
+      }: {
+        testDescription: string,
+        success?: boolean,
+        err?: Object
+      } = test;
 
       console.log(
         '    '

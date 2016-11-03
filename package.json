@@ -26,7 +26,8 @@
     "eslint-config-airbnb-base": "^9.0.0",
     "eslint-plugin-flowtype": "^2.25.0",
     "eslint-plugin-import": "^2.0.1",
-    "flow-bin": "^0.34.0"
+    "flow-bin": "^0.34.0",
+    "flow-typed": "^2.0.0"
   },
   "dependencies": {
     "chalk": "^1.1.3",

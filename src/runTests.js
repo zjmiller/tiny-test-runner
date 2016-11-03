@@ -2,7 +2,7 @@
 
 import getTestResults from './getTestResults';
 import reportOnTestResults from './reportOnTestResults';
-import type { TestResults } from '../flow-types/types';
+import type { TestResults } from '../flow-type-aliases/types';
 
 module.exports = function runTests(opts: Object) {
   getTestResults(opts)

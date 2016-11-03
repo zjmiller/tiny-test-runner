@@ -1,3 +1,5 @@
+/* @flow */
+
 export type Test = {|
   testDescription: string,
   testCb: Function,
