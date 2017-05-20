@@ -52,7 +52,7 @@ export default function reportOnTestResults(results: TestResults): void {
         const actualOutputMaybeStringified =
           typeof err.actual === 'object'
           ?
-          JSON.stringify(err.expected)
+          JSON.stringify(err.actual)
           :
           err.actual;
 
